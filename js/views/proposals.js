@@ -2,7 +2,7 @@
 
 import { store } from '../store.js';
 import { PROPOSAL_STATUS, CURRENCIES, proposalStatusLabel, unitLabel } from '../data.js';
-import { esc, icon, opts, money, fmtDate, todayStr, addDays, daysSince, toast, confirmDialog, emptyState, field, $, $$ } from '../ui.js';
+import { esc, icon, opts, money, fmtDate, todayStr, addDays, daysSince, toast, confirmDialog, emptyState, field, openModal, formData, $, $$ } from '../ui.js';
 import { proposalTotal, proposalMonthly, proposalTotalText, contractForm } from '../forms.js';
 
 const LANGS = [{ id: 'pt', label: 'Português' }, { id: 'en', label: 'English' }, { id: 'es', label: 'Español' }];
@@ -36,7 +36,8 @@ export function renderList(el, { navigate, refresh }) {
   const rows = store.all('proposals').filter((p) => !filters.status || p.status === filters.status)
     .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
   el.innerHTML = `
-    <header class="page-head"><div><h1>Propostas</h1><p class="muted">Crie a proposta a partir da ficha do cliente (aba Propostas).</p></div></header>
+    <header class="page-head"><div><h1>Propostas</h1><p class="muted">Monte a proposta com os serviços do catálogo e gere o PDF com a identidade Femik.</p></div>
+      ${store.can('edit') ? `<button class="btn btn-primary" id="new-prop">${icon('plus')}<span>Nova proposta</span></button>` : ''}</header>
     <div class="filters"><select id="f-status">${opts(PROPOSAL_STATUS, filters.status, { empty: 'Todos os status' })}</select></div>
     <div class="card table-card">${rows.length ? `<table class="list">
       <thead><tr><th>Proposta</th><th>Cliente</th><th>Status</th><th>Envio</th><th>Validade</th><th class="num">Total</th></tr></thead>
@@ -51,8 +52,18 @@ export function renderList(el, { navigate, refresh }) {
             ${waiting ? `<div class="late-text small">sem retorno há ${daysSince(p.sent_at)} dias</div>` : ''}${expired ? '<div class="late-text small">validade vencida</div>' : ''}</td>
           <td data-l="Envio">${fmtDate(p.sent_at)}</td><td data-l="Validade">${fmtDate(p.valid_until)}</td>
           <td data-l="Total" class="num">${esc(proposalTotalText(p))}</td></tr>`;
-      }).join('')}</tbody></table>` : emptyState('Nenhuma proposta ainda.')}</div>`;
+      }).join('')}</tbody></table>` : emptyState('Nenhuma proposta ainda.', store.can('edit') ? `<button class="btn btn-ghost" id="new-prop-2">${icon('plus')}<span>Criar a primeira proposta</span></button>` : '')}</div>`;
   $('#f-status', el).addEventListener('change', (e) => { filters.status = e.target.value; refresh(); });
+  const pick = () => {
+    const leads = store.all('leads').filter((l) => l.stage !== 'perdido').sort((a, b) => a.company.localeCompare(b.company));
+    openModal({
+      title: 'Nova proposta',
+      submitLabel: 'Criar proposta',
+      body: field('Para qual cliente? *', `<select name="lead" required>${opts(leads.map((l) => ({ id: l.id, label: `${l.company} · ${l.country}` })), '', { empty: 'Escolha o cliente' })}</select>`, { hint: 'A moeda e o idioma do PDF seguem o país do cliente; dá para mudar depois.' }),
+      onSubmit: async (form) => { const p = await newProposal(formData(form).lead); navigate(`#/proposta/${p.id}`); },
+    });
+  };
+  for (const id of ['#new-prop', '#new-prop-2']) { const b = $(id, el); if (b) b.addEventListener('click', pick); }
   $$('tbody tr', el).forEach((tr) => tr.addEventListener('click', () => navigate(`#/proposta/${tr.dataset.id}`)));
 }
 
