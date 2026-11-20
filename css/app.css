@@ -418,12 +418,16 @@ body.modal-open { overflow: hidden; }
 :root[data-theme="light"] .logo-dark { display: none; }
 :root[data-theme="light"] .logo-light { display: inline; }
 
-/* botão de tema: canto inferior direito no computador, canto superior direito no celular */
+/* botão de tema: canto superior direito */
 .theme-toggle { position: fixed; z-index: 40; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
   background: var(--surface); color: var(--text); border: 1px solid var(--line-2); box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.5);
   right: 58px; top: calc(8px + var(--safe-t)); width: 34px; height: 34px; }
 .theme-toggle:hover { border-color: var(--violet); }
 .theme-toggle .ic { width: 18px; height: 18px; }
 .login-page .theme-toggle { right: 14px; }
-@media (min-width: 960px) { .theme-toggle { top: auto; right: 22px; bottom: 22px; width: 42px; height: 42px; } }
+@media (min-width: 960px) {
+  .theme-toggle { top: 14px; right: 22px; width: 40px; height: 40px; }
+  .demo-bar ~ main, .content > main { padding-top: 66px; }
+  .demo-bar { padding-right: 80px; padding-left: 80px; }
+}
 @media print { .theme-toggle { display: none !important; } }
