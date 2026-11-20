@@ -83,13 +83,13 @@ function shell() {
       <aside class="side">
         <div class="brand"><img src="icons/logo.svg" alt="Femik" height="28" class="logo-dark"><img src="icons/logo-escuro.svg" alt="Femik" height="28" class="logo-light"><span>CRM</span></div>
         <nav class="side-nav">${NAV.map((n) => `<a href="${n.href}" data-nav="${n.id}">${icon(n.icon)}<span>${n.label}</span>${n.id === 'tarefas' ? '<b class="nav-badge" hidden></b>' : ''}</a>`).join('')}</nav>
-        <div class="side-user">${avatar(u)}<div><strong>${esc(u.name)}</strong><div class="muted small">${esc(roleLabel(u.role))}</div></div></div>
+        <button type="button" class="side-user" id="user-btn" aria-haspopup="menu" aria-expanded="false">${avatar(u)}<div><strong>${esc(u.name)}</strong><div class="muted small">${esc(roleLabel(u.role))}</div></div>${icon('mais', 'side-user-more')}</button>
       </aside>
       <div class="content">
         <header class="topbar">
           <img src="icons/simbolo.svg" alt="" width="28" height="28"><strong>CRM Femik</strong>
           ${store.demo ? '<span class="demo-pill">demo</span>' : ''}
-          <a href="#/config" class="top-user" aria-label="Configurações">${avatar(u, 'sm')}</a>
+          <button type="button" class="top-user" id="user-btn-top" aria-haspopup="menu" aria-expanded="false" aria-label="Menu do usuário">${avatar(u, 'sm')}</button>
         </header>
         ${store.demo ? '<div class="demo-bar">Modo demonstração · os dados ficam só neste aparelho</div>' : ''}
         <main id="main" tabindex="-1"></main>
@@ -102,6 +102,8 @@ function shell() {
     <div id="modal-root"></div><div id="toasts" aria-live="polite"></div><div id="print-root"></div>`;
   document.body.className = '';
   themeToggle();
+  $('#user-btn').addEventListener('click', (e) => { e.stopPropagation(); toggleUserMenu(e.currentTarget, 'up'); });
+  $('#user-btn-top').addEventListener('click', (e) => { e.stopPropagation(); toggleUserMenu(e.currentTarget, 'down'); });
   $('#more-btn').addEventListener('click', () => {
     openModal({
       title: 'Mais',
@@ -110,6 +112,46 @@ function shell() {
     $$('.more-nav a').forEach((a) => a.addEventListener('click', () => closeModal()));
   });
 }
+
+// --- menu do usuário (trocar de usuário / sair) -----------------------------
+function closeUserMenu() {
+  const m = $('.user-menu');
+  if (m) m.remove();
+  $$('[aria-haspopup="menu"]').forEach((b) => b.setAttribute('aria-expanded', 'false'));
+}
+function toggleUserMenu(anchor, dir) {
+  if ($('.user-menu')) { closeUserMenu(); return; }
+  const u = store.user;
+  const menu = document.createElement('div');
+  menu.className = `user-menu user-menu-${dir}`;
+  menu.setAttribute('role', 'menu');
+  menu.innerHTML = `
+    <div class="um-head">${avatar(u)}<div><strong>${esc(u.name)}</strong><div class="muted small">${esc(u.email || roleLabel(u.role))}</div></div></div>
+    <a role="menuitem" href="#/config">${icon('config')}<span>A minha conta</span></a>
+    ${store.demo ? `<button role="menuitem" type="button" data-act="switch">${icon('leads')}<span>Trocar de usuário</span></button>` : ''}
+    <button role="menuitem" type="button" data-act="logout" class="um-danger">${icon('logout')}<span>Sair</span></button>`;
+  document.body.appendChild(menu);
+  const r = anchor.getBoundingClientRect();
+  if (dir === 'up') { menu.style.left = `${r.left}px`; menu.style.bottom = `${window.innerHeight - r.top + 8}px`; menu.style.width = `${Math.max(r.width, 220)}px`; }
+  else { menu.style.right = `${window.innerWidth - r.right}px`; menu.style.top = `${r.bottom + 8}px`; }
+  anchor.setAttribute('aria-expanded', 'true');
+  menu.addEventListener('click', async (e) => {
+    const el = e.target.closest('[role=menuitem]');
+    if (!el) return;
+    closeUserMenu();
+    if (el.dataset.act === 'switch' || el.dataset.act === 'logout') {
+      await store.signOut();
+      location.hash = '#/';
+      location.reload();
+    }
+  });
+  const first = menu.querySelector('[role=menuitem]');
+  if (first && window.matchMedia('(pointer:fine)').matches) first.focus();
+}
+document.addEventListener('click', (e) => { if (!e.target.closest('.user-menu')) closeUserMenu(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeUserMenu(); });
+window.addEventListener('hashchange', closeUserMenu);
+window.addEventListener('resize', closeUserMenu);
 
 // --- login -----------------------------------------------------------------
 function loginScreen(error = '') {
