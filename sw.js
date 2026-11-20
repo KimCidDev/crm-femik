@@ -1,6 +1,6 @@
 // Service worker do CRM Femik: guarda a "casca" da aplicação para abrir rápido
 // e funcionar como app instalada. Os dados (Supabase) passam sempre pela rede.
-const CACHE = 'crm-femik-v0.1.2';
+const CACHE = 'crm-femik-v0.1.3';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
   'js/app.js', 'js/config.js', 'js/data.js', 'js/store.js', 'js/ui.js', 'js/forms.js',

@@ -145,7 +145,7 @@ function tabResumo(body, lead, { navigate, refresh }) {
           ${info('Origem do lead', esc(lead.source))}
           ${info('Responsável pelo atendimento', esc(store.profileName(lead.owner_id)))}
           ${info('Valor estimado', lead.value_estimate ? money(lead.value_estimate, lead.currency) : '')}
-          ${info('Último contato', lead.last_contact_at ? `${fmtDate(lead.last_contact_at)} <span class="muted">(${since === 0 ? 'hoje' : `há ${since} dia${since === 1 ? '' : 's'}`})</span>` : '')}
+          ${info('Último contato', lead.last_contact_at ? `${fmtDate(lead.last_contact_at)} <span class="muted">(${esc(relDays(lead.last_contact_at))})</span>` : '')}
           ${info('Cadastrado em', fmtDate(lead.created_at))}
           ${lead.stage === 'perdido' ? info('Motivo da perda', esc(lead.lost_reason)) : ''}
           ${info('Base legal (LGPD)', lead.consent ? 'Registrada' : '<span class="late-text">Não registrada</span>')}

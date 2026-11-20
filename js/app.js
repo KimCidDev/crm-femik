@@ -3,7 +3,7 @@
 import { store } from './store.js';
 import { CONFIG } from './config.js';
 import { roleLabel } from './data.js';
-import { esc, icon, avatar, toast, closeModal, openModal, field, formData, todayStr, $, $$ } from './ui.js';
+import { esc, icon, avatar, toast, closeModal, openModal, field, formData, todayStr, themeToggle, $, $$ } from './ui.js';
 import * as dashboard from './views/dashboard.js';
 import * as pipeline from './views/pipeline.js';
 import * as leads from './views/leads.js';
@@ -81,7 +81,7 @@ function shell() {
     <a class="skip" href="#main">Ir para o conteúdo</a>
     <div class="app">
       <aside class="side">
-        <div class="brand"><img src="icons/logo.svg" alt="Femik" height="28"><span>CRM</span></div>
+        <div class="brand"><img src="icons/logo.svg" alt="Femik" height="28" class="logo-dark"><img src="icons/logo-escuro.svg" alt="Femik" height="28" class="logo-light"><span>CRM</span></div>
         <nav class="side-nav">${NAV.map((n) => `<a href="${n.href}" data-nav="${n.id}">${icon(n.icon)}<span>${n.label}</span>${n.id === 'tarefas' ? '<b class="nav-badge" hidden></b>' : ''}</a>`).join('')}</nav>
         <div class="side-user">${avatar(u)}<div><strong>${esc(u.name)}</strong><div class="muted small">${esc(roleLabel(u.role))}</div></div></div>
       </aside>
@@ -100,6 +100,8 @@ function shell() {
       </nav>
     </div>
     <div id="modal-root"></div><div id="toasts" aria-live="polite"></div><div id="print-root"></div>`;
+  document.body.className = '';
+  themeToggle();
   $('#more-btn').addEventListener('click', () => {
     openModal({
       title: 'Mais',
@@ -115,7 +117,7 @@ function loginScreen(error = '') {
   document.body.innerHTML = `
     <main class="login">
       <div class="login-card">
-        <img src="icons/logo.svg" alt="Femik" class="login-logo">
+        <img src="icons/logo.svg" alt="Femik" class="login-logo logo-dark"><img src="icons/logo-escuro.svg" alt="Femik" class="login-logo logo-light">
         <h1>CRM</h1>
         ${error ? `<p class="login-err" role="alert">${esc(error)}</p>` : ''}
         ${store.demo ? `
@@ -132,6 +134,8 @@ function loginScreen(error = '') {
       <p class="login-foot muted small">${esc(CONFIG.APP_NAME)} · v${esc(CONFIG.VERSION)}</p>
     </main>
     <div id="modal-root"></div><div id="toasts" aria-live="polite"></div>`;
+  document.body.className = 'login-page';
+  themeToggle();
   if (store.demo) {
     $$('.login-person').forEach((b) => b.addEventListener('click', async () => {
       await store.signInDemo(b.dataset.id);

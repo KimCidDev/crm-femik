@@ -107,6 +107,8 @@ const P = {
   history: 'M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2',
   grip: 'M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01',
   alert: 'M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z',
+  sun: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
+  moon: 'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z',
   star: 'M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.6l6.2-.9z',
 };
 export const icon = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${P[name] || ''}"/></svg>`;
@@ -216,4 +218,29 @@ export function avatar(profile, size = '') {
 
 export function emptyState(text, action = '') {
   return `<div class="empty">${esc(text)}${action ? `<div class="empty-action">${action}</div>` : ''}</div>`;
+}
+
+// --- tema claro / escuro ------------------------------------------------------
+const THEME_KEY = 'femik-crm-theme';
+export function currentTheme() { return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'; }
+export function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'light' ? '#f6f5fb' : '#07060f');
+  try { localStorage.setItem(THEME_KEY, theme); } catch { /* sem armazenamento */ }
+  const b = document.querySelector('.theme-toggle');
+  if (b) {
+    const next = theme === 'light' ? 'escuro' : 'claro';
+    b.innerHTML = icon(theme === 'light' ? 'moon' : 'sun');
+    b.setAttribute('aria-label', `Mudar para o modo ${next}`);
+    b.title = `Modo ${next}`;
+  }
+}
+export function themeToggle() {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'theme-toggle';
+  b.addEventListener('click', () => applyTheme(currentTheme() === 'light' ? 'dark' : 'light'));
+  document.body.appendChild(b);
+  applyTheme(currentTheme());
 }
