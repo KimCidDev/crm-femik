@@ -32,6 +32,11 @@ class LocalAdapter {
       try {
         const data = JSON.parse(raw);
         for (const t of TABLES) data[t] = data[t] || [];
+        // Cláudio saiu da lista da equipe (20 Nov 2026): remove dos dados já guardados no aparelho.
+        if (data.profiles.some((p) => p.id === 'u-claudio')) {
+          data.profiles = data.profiles.filter((p) => p.id !== 'u-claudio');
+          this.save(data);
+        }
         return data;
       } catch { /* dados corrompidos: recomeça do seed */ }
     }

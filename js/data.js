@@ -91,7 +91,6 @@ export function seedData() {
     kim:    { id: 'u-kim',    name: 'Kim Cid',           email: 'kim@femik.ca',    role: 'admin',     location: 'Calgary, Canadá', active: true },
     isabel: { id: 'u-isabel', name: 'Isabel De Miranda', email: 'isabel@femik.ca', role: 'comercial', location: 'Vitória da Conquista, Brasil', active: true },
     felipe: { id: 'u-felipe', name: 'Felipe Vidal',      email: 'felipe@femik.ca', role: 'analista',  location: 'Caudete, Espanha', active: true },
-    claudio:{ id: 'u-claudio',name: 'Cláudio',           email: '',                role: 'tecnico',   location: '', active: true },
   };
   const profiles = Object.values(p).map((x) => ({ ...x, created_at: T0 }));
 

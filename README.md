@@ -20,9 +20,9 @@ CRM próprio da Femik: leads e clientes, funil de vendas (Kanban), histórico de
 1. Crie a conta em supabase.com com o e-mail da Femik e um projeto novo (região sugerida: `us-east` ou `ca-central`).
 2. **SQL Editor → New query**: cole o conteúdo de `supabase/schema.sql` e rode. Ele cria as tabelas, as permissões (RLS), o registro de alterações, o tempo real e o bucket privado `documentos`.
 3. **Authentication → URL Configuration**: em *Site URL* coloque o endereço do GitHub Pages; em *Redirect URLs* adicione o mesmo endereço.
-4. **Authentication → Users → Invite user**: convide primeiro o Kim (o primeiro usuário vira **administrador** automaticamente), depois Isabel, Felipe e Cláudio.
+4. **Authentication → Users → Invite user**: convide primeiro o Kim (o primeiro usuário vira **administrador** automaticamente), depois Isabel e Felipe.
 5. **Project Settings → API**: copie a *Project URL* e a chave *anon public* para `js/config.js` (`SUPABASE_URL` e `SUPABASE_ANON_KEY`). A chave anon é pública por desenho; a segurança vem das políticas RLS.
-6. Entre como Kim, ajuste as permissões em **Equipe e serviços** (Isabel → Comercial, Felipe → Dados e análise, Cláudio → Técnico) e use **Configurações → Importar dados iniciais** para carregar os 6 leads, as tarefas e o catálogo de serviços.
+6. Entre como Kim, ajuste as permissões em **Equipe e serviços** (Isabel → Comercial, Felipe → Dados e análise) e use **Configurações → Importar dados iniciais** para carregar os 6 leads, as tarefas e o catálogo de serviços.
 
 ## Permissões
 
