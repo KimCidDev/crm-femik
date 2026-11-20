@@ -4,13 +4,13 @@ import { store } from '../store.js';
 import { CONFIG } from '../config.js';
 import { esc, icon, opts, toast, downloadBlob, todayStr, confirmDialog, field, openModal, formData, emptyState, $, $$ } from '../ui.js';
 import { auditRow } from './leads.js';
+import { installCard, bindInstall } from '../install.js';
 
 const state = { who: '' };
 
 export function render(el, { refresh }) {
   const admin = store.can('admin');
   const audit = store.all('audit_log').filter((a) => !state.who || a.user_id === state.who).slice(0, 150);
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
   el.innerHTML = `
     <header class="page-head"><div><h1>Configurações</h1><p class="muted">${esc(CONFIG.APP_NAME)} · versão ${esc(CONFIG.VERSION)}</p></div></header>
@@ -26,11 +26,7 @@ export function render(el, { refresh }) {
         <div class="row-btns">${!store.demo ? '<button class="btn btn-ghost btn-sm" id="pw">Alterar senha</button>' : ''}
           <button class="btn btn-ghost btn-sm" id="logout">${icon('logout')}<span>Sair</span></button></div>
       </section>
-      <section class="card">
-        <h2 class="sec-title">Instalar no celular</h2>
-        ${isIOS ? '<p>No Safari, toque em <b>Partilhar</b> e depois em <b>Adicionar à Tela de Início</b>. O CRM abre em tela cheia, com ícone próprio.</p>'
-          : '<p><b>iPhone:</b> Safari → Partilhar → Adicionar à Tela de Início.<br><b>Android:</b> Chrome → menu ⋮ → Instalar app.<br><b>Computador:</b> ícone de instalar na barra de endereço do Chrome ou Edge.</p>'}
-      </section>
+      ${installCard({ title: 'Instalar como app' })}
       <section class="card">
         <h2 class="sec-title">Backup dos dados</h2>
         <p class="muted small">Baixa um arquivo com todos os registros (sem o conteúdo dos anexos). Guarde uma cópia por semana num lugar seguro.${!store.demo ? ' O plano gratuito do Supabase não guarda backups automáticos que se possam restaurar.' : ''}</p>
@@ -59,6 +55,7 @@ export function render(el, { refresh }) {
       ${audit.length ? `<ul class="audit">${audit.map(auditRow).join('')}</ul>` : emptyState('Nenhuma alteração registrada.')}
     </section>`;
 
+  bindInstall(el);
   $('#logout', el).addEventListener('click', async () => { await store.signOut(); location.hash = '#/'; location.reload(); });
   $('#who', el).addEventListener('change', (e) => { state.who = e.target.value; refresh(); });
   const bk = $('#backup', el);

@@ -444,3 +444,20 @@ body.modal-open { overflow: hidden; }
 .user-menu [role=menuitem]:hover, .user-menu [role=menuitem]:focus-visible { background: var(--wash-2); outline: none; }
 .user-menu .ic { width: 18px; height: 18px; color: var(--muted); }
 .user-menu .um-danger, .user-menu .um-danger .ic { color: var(--bad); }
+
+/* instalação como app */
+.install-card { border-color: rgba(168, 85, 247, 0.4); background: linear-gradient(135deg, rgba(168, 85, 247, 0.10), rgba(34, 211, 238, 0.05)), var(--surface); }
+.install-card .sec-title { gap: 8px; }
+.install-card .sec-title .ic { color: var(--violet); }
+.inst-body p { margin: 0 0 10px; }
+.inst-steps { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 10px; }
+.inst-steps li { display: flex; gap: 10px; align-items: flex-start; }
+.inst-n { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--grad); color: #fff; font: 700 0.78rem/1 var(--font-h); margin-top: 1px; }
+.inst-key { display: inline-flex; align-items: center; gap: 5px; padding: 1px 8px; border-radius: 8px; background: var(--wash-2); border: 1px solid var(--line-2); vertical-align: middle; white-space: nowrap; }
+.inst-key .ic { width: 16px; height: 16px; color: var(--cyan); }
+.login-install { width: min(420px, 92vw); margin: 0 0 14px; text-align: left; }
+.inst-key .ic-dots { stroke-width: 3.4; color: var(--text); }
+@media (max-width: 600px) { .login { padding-top: 64px; place-content: start center; } }
+.login-install .install-card { margin: 0; }
+.inst-tip { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--warn-bg); color: var(--text); font-size: 0.9rem; }
+.inst-tip > .ic { color: var(--warn); margin-top: 2px; }

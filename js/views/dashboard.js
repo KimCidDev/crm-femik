@@ -5,6 +5,7 @@ import { STAGES, OPEN_STAGES, COUNTRIES } from '../data.js';
 import { localDate, esc, icon, opts, money, moneyTotals, totalsText, todayStr, addDays, daysSince, fmtDate, relDays, emptyState, $ } from '../ui.js';
 import { proposalTotalText } from '../forms.js';
 import { taskItem, bindTaskList } from './tasks.js';
+import { installCard, bindInstall } from '../install.js';
 
 export const PERIODS = [
   { id: 'month', label: 'Este mês' }, { id: '30', label: 'Últimos 30 dias' }, { id: 'quarter', label: 'Este trimestre' },
@@ -62,6 +63,7 @@ export function render(el, { refresh }) {
     <header class="page-head">
       <div><h1>Olá, ${esc(first)}</h1><p class="muted">Painel comercial da Femik</p></div>
     </header>
+    ${installCard({ dismissible: true })}
     <div class="filters">
       <select id="d-period" aria-label="Período">${opts(PERIODS, state.period)}</select>
       <select id="d-country" aria-label="País">${opts(COUNTRIES, state.country, { empty: 'Todos os países' })}</select>
@@ -105,6 +107,7 @@ export function render(el, { refresh }) {
   for (const [id, k] of [['d-period', 'period'], ['d-country', 'country'], ['d-owner', 'owner']]) {
     $('#' + id, el).addEventListener('change', (e) => { state[k] = e.target.value; refresh(); });
   }
+  bindInstall(el);
   const mineEl = $('#mine', el);
   if (mineEl) bindTaskList(mineEl, refresh);
 }

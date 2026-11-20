@@ -4,6 +4,7 @@ import { store } from './store.js';
 import { CONFIG } from './config.js';
 import { roleLabel } from './data.js';
 import { esc, icon, avatar, toast, closeModal, openModal, field, formData, todayStr, themeToggle, $, $$ } from './ui.js';
+import { installCard, bindInstall, shouldOfferInstall } from './install.js';
 import * as dashboard from './views/dashboard.js';
 import * as pipeline from './views/pipeline.js';
 import * as leads from './views/leads.js';
@@ -158,6 +159,7 @@ function loginScreen(error = '') {
   const people = store.all('profiles');
   document.body.innerHTML = `
     <main class="login">
+      ${shouldOfferInstall() ? `<div class="login-install">${installCard({ title: 'Antes de começar: instale o app' })}</div>` : ''}
       <div class="login-card">
         <img src="icons/logo.svg" alt="Femik" class="login-logo logo-dark"><img src="icons/logo-escuro.svg" alt="Femik" class="login-logo logo-light">
         <h1>CRM</h1>
@@ -178,6 +180,7 @@ function loginScreen(error = '') {
     <div id="modal-root"></div><div id="toasts" aria-live="polite"></div>`;
   document.body.className = 'login-page';
   themeToggle();
+  bindInstall(document.body);
   if (store.demo) {
     $$('.login-person').forEach((b) => b.addEventListener('click', async () => {
       await store.signInDemo(b.dataset.id);
